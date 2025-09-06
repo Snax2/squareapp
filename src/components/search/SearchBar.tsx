@@ -98,27 +98,27 @@ export function SearchBar({
   };
 
   return (
-    <div className={cn("relative w-full max-w-2xl mx-auto", className)}>
-      <form onSubmit={handleSubmit} className="space-y-3">
+    <div className={cn("relative w-full max-w-4xl mx-auto", className)}>
+      <form onSubmit={handleSubmit} className="space-y-4">
         {/* Search Input */}
         <div className="relative">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <div className="relative shadow-lg">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-6 w-6" />
             <Input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={placeholder}
-              className="pl-10 pr-10 h-12 text-lg"
+              className="pl-12 pr-12 h-16 text-lg border-2 border-gray-200 focus:border-blue-500 rounded-xl shadow-sm"
               onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
             />
             {query && (
               <button
                 type="button"
                 onClick={clearQuery}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                <X className="h-5 w-5" />
+                <X className="h-6 w-6" />
               </button>
             )}
           </div>
@@ -142,13 +142,13 @@ export function SearchBar({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-col sm:flex-row gap-3">
           <Button 
             type="submit" 
-            className="flex-1 h-12"
+            className="flex-1 h-14 text-lg font-semibold bg-blue-600 hover:bg-blue-700 shadow-lg"
             disabled={!query.trim()}
           >
-            <Search className="mr-2 h-5 w-5" />
+            <Search className="mr-2 h-6 w-6" />
             Search Products
           </Button>
           
@@ -157,7 +157,7 @@ export function SearchBar({
             variant={getLocationButtonVariant()}
             onClick={requestLocation}
             disabled={locationLoading || hasLocation}
-            className="h-12"
+            className="h-14 px-6 text-base font-medium shadow-lg"
           >
             <MapPin className="mr-2 h-5 w-5" />
             {getLocationButtonText()}

@@ -71,14 +71,14 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Local Inventory Finder
+            <div className="text-center sm:text-left">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                🛍️ Local Inventory Finder
               </h1>
-              <p className="text-gray-600">Find products in nearby stores</p>
+              <p className="text-lg text-gray-600">Find products in nearby stores across Byron Bay</p>
             </div>
             
             {/* View mode toggle */}
@@ -112,6 +112,14 @@ export default function HomePage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search section */}
         <div className="mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-semibold text-gray-700 mb-2">
+              What are you looking for today?
+            </h2>
+            <p className="text-gray-500">
+              Search for products like "black hoodie", "coffee beans", or "iPhone case"
+            </p>
+          </div>
           <SearchBar onSearch={handleSearch} />
         </div>
 
