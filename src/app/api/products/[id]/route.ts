@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/database';
 import { calculateDistance } from '@/lib/utils';
 import type { ProductWithMerchant } from '@/lib/types';
 
@@ -8,6 +7,21 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Check if we're in build time (no DATABASE_URL)
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'BUILD_TIME',
+            message: 'API not available during build',
+          },
+        },
+        { status: 503 }
+      );
+    }
+
+    const { prisma } = await import('@/lib/database');
     const productId = params.id;
     const { searchParams } = new URL(request.url);
     const lat = searchParams.get('lat');

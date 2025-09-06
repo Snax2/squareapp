@@ -1,9 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/database';
-import { squareAPI } from '@/lib/square-api';
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if we're in build time (no DATABASE_URL or Square credentials)
+    if (!process.env.DATABASE_URL || !process.env.SQUARE_ACCESS_TOKEN) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'BUILD_TIME',
+            message: 'API not available during build',
+          },
+        },
+        { status: 503 }
+      );
+    }
+
+    const { prisma } = await import('@/lib/database');
+    const { squareAPI } = await import('@/lib/square-api');
     const body = await request.text();
     const signature = request.headers.get('x-square-signature') || '';
     const url = request.url;
@@ -45,6 +59,7 @@ export async function POST(request: NextRequest) {
 
 async function handleInventoryUpdate(data: any) {
   try {
+    const { prisma } = await import('@/lib/database');
     const { location_id, inventory_counts } = data;
 
     if (!inventory_counts || !Array.isArray(inventory_counts)) {
