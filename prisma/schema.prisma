@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Merchant {
+  id               String    @id @default(cuid())
+  squareMerchantId String    @unique
+  name             String
+  email            String?
+  phone            String?
+  address          Json
+  latitude         Float
+  longitude        Float
+  isActive         Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  
+  products         Product[]
+  
+  @@map("merchants")
+  @@index([latitude, longitude])
+}
+
+model Product {
+  id              String      @id @default(cuid())
+  squareItemId    String      @unique
+  merchantId      String
+  name            String
+  description     String?
+  category        String?
+  imageUrl        String?
+  basePrice       Float?
+  isActive        Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  merchant        Merchant    @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  variations      ProductVariation[]
+  inventory       Inventory[]
+  
+  @@map("products")
+  @@index([merchantId])
+  @@index([category])
+  @@index([name])
+}
+
+model ProductVariation {
+  id                   String    @id @default(cuid())
+  squareVariationId    String    @unique
+  productId            String
+  name                 String
+  sku                  String?
+  price                Float
+  attributes           Json      // color, size, etc.
+  isActive             Boolean   @default(true)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  
+  product              Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  inventory            Inventory[]
+  
+  @@map("product_variations")
+  @@index([productId])
+}
+
+model Inventory {
+  id                String             @id @default(cuid())
+  productId         String
+  variationId       String
+  quantity          Int                @default(0)
+  lastSyncAt        DateTime           @default(now())
+  
+  product           Product            @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variation         ProductVariation   @relation(fields: [variationId], references: [id], onDelete: Cascade)
+  
+  @@map("inventory")
+  @@unique([productId, variationId])
+  @@index([productId])
+  @@index([variationId])
+  @@index([quantity])
+}
+
+model Search {
+  id        String   @id @default(cuid())
+  query     String
+  latitude  Float?
+  longitude Float?
+  radius    Float?
+  results   Int      @default(0)
+  createdAt DateTime @default(now())
+  
+  @@map("searches")
+  @@index([createdAt])
+  @@index([query])
+}
+
